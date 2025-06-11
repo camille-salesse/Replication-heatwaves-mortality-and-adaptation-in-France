@@ -1,0 +1,85 @@
+
+library(data.table)
+library(dplyr)
+library(readr)
+library(lubridate)
+library(data.table)
+library(dplyr)
+library(readr)
+library(lubridate)
+library(data.table)
+library(dplyr)
+library(readr)
+library(ncdf4)
+library(raster)
+library(rgdal)
+library(sf)
+library(dplyr)
+library(tidyr)
+library(lubridate)
+library(readr)
+library(plm)
+library(fixest)
+library(ggplot2)
+
+
+
+
+communes_dates_1980_2022_temperature_final_mois<-fread("heatwave and mortality code and data/base_donnees_final_heatwave.csv")
+
+communes_dates_1980_2022_temperature_final_mois$below_minus_20_to_minus_5<-communes_dates_1980_2022_temperature_final_mois$below_minus_20_to_minus_15+communes_dates_1980_2022_temperature_final_mois$minus_15_to_minus_10+communes_dates_1980_2022_temperature_final_mois$minus_10_to_minus_5
+
+
+base_finale_mortalite_NEW<-fread("heatwave and mortality code and data/new data/base_finale_mortalite_NEW.csv")
+names(base_finale_mortalite_NEW)[names(base_finale_mortalite_NEW)=="month"]<-"mois"
+
+communes_dates_1980_2022_temperature_final_mois<-communes_dates_1980_2022_temperature_final_mois[,c(-4,-(6:25),-54,-55,-58,-(27:39))]
+
+base_finale_mortalite_NEW_2<-left_join(base_finale_mortalite_NEW,communes_dates_1980_2022_temperature_final_mois)
+
+
+
+
+
+fwrite(base_finale_mortalite_NEW_2,"heatwave and mortality code and data/base_finale_NEW.csv")
+
+
+
+
+
+
+communes_dates_1980_2022_temperature_final_mois<-fread("heatwave and mortality code and data/base_finale_NEW.csv")
+
+
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_75_plus <= 1)
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_80_plus <= 1)
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_total <= 1)
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_65_69 <= 1)
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_70_74 <= 1)
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_75_79 <= 1)
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_40_59 <= 1)
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_20_39 <= 1)
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_10_19 <= 1)
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_0_9 <= 1)
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois,  taux_mortalite_60_74 <= 1)
+
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_total<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_total*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_80_plus<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_80_plus*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_65_69<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_65_69*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_60_64<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_60_64*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_70_74<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_70_74*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_75_79<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_75_79*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_40_59<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_40_59*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_20_39<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_20_39*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_10_19<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_10_19*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_0_9<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_0_9*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_60_74<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_60_74*10000
+communes_dates_1980_2022_temperature_final_mois$taux_mortalite_75_plus<-communes_dates_1980_2022_temperature_final_mois$taux_mortalite_75_plus*10000
+
+
+communes_dates_1980_2022_temperature_final_mois<-filter(communes_dates_1980_2022_temperature_final_mois, communes_dates_1980_2022_temperature_final_mois$taux_mortalite_60_64 <= 10000 )
+
+
+fwrite(communes_dates_1980_2022_temperature_final_mois,"heatwave and mortality code and data/base_finale_NEW_final.csv")
+
+
